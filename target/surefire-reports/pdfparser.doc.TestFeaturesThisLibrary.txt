@@ -1,0 +1,20 @@
+-------------------------------------------------------------------------------
+Test set: pdfparser.doc.TestFeaturesThisLibrary
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.634 sec <<< FAILURE!
+pdfparser.doc.TestFeaturesThisLibrary.testOpenFile()  Time elapsed: 0.623 sec  <<< FAILURE!
+java.io.FileNotFoundException: /home/alexej/eclipse-workspace/ru.durnov.odf/pdf/10-А-07_А3.pdf (Нет такого файла или каталога)
+	at java.io.FileInputStream.open0(Native Method)
+	at java.io.FileInputStream.open(FileInputStream.java:195)
+	at java.io.FileInputStream.<init>(FileInputStream.java:138)
+	at java.io.FileInputStream.<init>(FileInputStream.java:93)
+	at sun.net.www.protocol.file.FileURLConnection.connect(FileURLConnection.java:90)
+	at sun.net.www.protocol.file.FileURLConnection.getInputStream(FileURLConnection.java:188)
+	at java.net.URL.openStream(URL.java:1068)
+	at com.itextpdf.text.io.RandomAccessSourceFactory.createSource(RandomAccessSourceFactory.java:128)
+	at com.itextpdf.text.io.RandomAccessSourceFactory.createBestSource(RandomAccessSourceFactory.java:170)
+	at com.itextpdf.text.pdf.PdfReader.<init>(PdfReader.java:243)
+	at com.itextpdf.text.pdf.PdfReader.<init>(PdfReader.java:254)
+	at com.itextpdf.text.pdf.PdfReader.<init>(PdfReader.java:230)
+	at pdfparser.doc.TestFeaturesThisLibrary.testOpenFile(TestFeaturesThisLibrary.java:29)
+
