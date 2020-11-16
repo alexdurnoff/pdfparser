@@ -4,18 +4,14 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Set;
 
+import com.itextpdf.text.pdf.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.itextpdf.text.Rectangle;
-import com.itextpdf.text.pdf.PRStream;
-import com.itextpdf.text.pdf.PdfDictionary;
-import com.itextpdf.text.pdf.PdfName;
-import com.itextpdf.text.pdf.PdfObject;
-import com.itextpdf.text.pdf.PdfReader;
 
 public class TestFeaturesThisLibrary {
-	private final String pathToPDFFile = "file:///home/alexej/eclipse-workspace/ru.durnov.odf/pdf/10-А-07_А3.pdf";
+	private final String pathToPDFFile = "10-А-11_А3.pdf";
 	private PdfReader reader;
 	
 	@BeforeEach
@@ -47,6 +43,28 @@ public class TestFeaturesThisLibrary {
 		while (pdfObject != null){
 			System.out.println("start new pdfObject output");
 			System.out.println(pdfObject.toString() + "---" + pdfObject.getClass().toString());
+			if(pdfObject.isDictionary()){
+				PdfDictionary pdfDictionary = (PdfDictionary) pdfObject;
+				Set<PdfName> pdfDictionaryKeys = pdfDictionary.getKeys();
+				for (PdfName name:pdfDictionaryKeys){
+					System.out.println(name);
+					PdfObject object = pdfDictionary.get(name);
+					System.out.println("----");
+					System.out.println(object.toString());
+					System.out.println("----");
+				}
+			} else if (pdfObject.isStream()){
+				PRStream stream = (PRStream) pdfObject;
+				PdfDictionary streamRoot = stream.getReader().getCatalog();
+				Set<PdfName> pdfDictionaryKeys = streamRoot.getKeys();
+				for (PdfName name:pdfDictionaryKeys){
+					System.out.println(name);
+					PdfObject object = streamRoot.get(name);
+					System.out.println("----");
+					System.out.println(object.toString());
+					System.out.println("----");
+				}
+			}
 			System.out.println("end of pdfObject output");
 			if(pdfObject.getClass() == PRStream.class){
 				PRStream stream = (PRStream) pdfObject;
@@ -55,6 +73,27 @@ public class TestFeaturesThisLibrary {
 			pdfObject = reader.getPdfObject(countObjects);
 		}
 		
+	}
+
+	@Test
+	public void testEncoding() throws IOException {
+		reader = new PdfReader(this.pathToPDFFile);
+		int count = reader.getXrefSize();
+		for (int i = 1; i < count; i++){
+			PdfObject pdfObject = reader.getPdfObject(i);
+			if(pdfObject.isArray()){
+				PdfArray pdfArray = (PdfArray) pdfObject;
+				System.out.println(pdfArray);
+			}
+		}
+	}
+
+	@Test
+	public void testInfo() throws IOException {
+		reader = new PdfReader(this.pathToPDFFile);
+		HashMap<String, String> infoMap = reader.getInfo();
+		infoMap.forEach((k,v) -> System.out.println(k + "--" + v));
+		reader.close();
 	}
 
 }
