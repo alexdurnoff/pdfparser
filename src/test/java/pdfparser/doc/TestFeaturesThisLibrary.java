@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.Set;
 
 import com.itextpdf.text.pdf.*;
+import com.itextpdf.text.pdf.parser.PdfTextExtractor;
+import com.itextpdf.text.pdf.parser.SimpleTextExtractionStrategy;
+import com.itextpdf.text.pdf.parser.TextExtractionStrategy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -93,6 +96,39 @@ public class TestFeaturesThisLibrary {
 		reader = new PdfReader(this.pathToPDFFile);
 		HashMap<String, String> infoMap = reader.getInfo();
 		infoMap.forEach((k,v) -> System.out.println(k + "--" + v));
+		reader.close();
+	}
+
+	@Test
+	public void simpleExtractText() throws IOException {
+		reader = new PdfReader("Т20-ИОС1.2-РД.pdf");
+		int count = reader.getNumberOfPages();
+		for (int i = 1; i <= count; i++) {
+			TextExtractionStrategy textExtractionStrategy = new SimpleTextExtractionStrategy();
+			String text = PdfTextExtractor.getTextFromPage(reader, i, textExtractionStrategy);
+			System.out.println(text);
+		}
+		reader.close();
+	}
+
+	@Test
+	public void testTextFromPage23() throws IOException {
+		reader = new PdfReader("10-А-11_А3.pdf");
+		TextExtractionStrategy textExtractionStrategy = new SimpleTextExtractionStrategy();
+		String text = PdfTextExtractor.getTextFromPage(reader, 1, textExtractionStrategy).replace("QF", "\nQF");
+		System.out.println(text);
+		reader.close();
+	}
+
+	@Test
+	public void testMytishyObjectExtractText() throws IOException {
+		reader = new PdfReader("/home/alexej/Документы/Работа/Мытищи/ЭОМ 47/лист 3_Схема ВРУ2-3.pdf");
+		int count = reader.getNumberOfPages();
+		for (int i = 1; i <= count; i++) {
+			TextExtractionStrategy textExtractionStrategy = new SimpleTextExtractionStrategy();
+			String text = PdfTextExtractor.getTextFromPage(reader, i, textExtractionStrategy).replace("\n", " ");
+			System.out.println(text);
+		}
 		reader.close();
 	}
 
