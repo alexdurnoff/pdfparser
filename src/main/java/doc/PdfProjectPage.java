@@ -51,4 +51,9 @@ public class PdfProjectPage implements ProjectPage{
         Pattern pattern = Pattern.compile(breakerRegExp);
         return stingListByRegExp(pattern);
     }
+
+    @Override
+    public String fileName() {
+        return this.fileName;
+    }
 }
