@@ -2,6 +2,8 @@ package doc;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,6 +16,7 @@ import java.util.List;
  */
 public class ProjectPageWithJSON implements ProjectPage, JSONWriter{
     private final ProjectPage projectPage;
+    private final static Logger logger = LogManager.getLogger(ProjectPageWithJSON.class);
 
     public ProjectPageWithJSON(ProjectPage projectPage){
         this.projectPage = projectPage;
@@ -38,7 +41,10 @@ public class ProjectPageWithJSON implements ProjectPage, JSONWriter{
 
     @Override
     public void writeToJSON() throws IOException {
+        File file  = new File(fileName() + ".json");
+        logger.info(fileName() + ".json");
+        logger.info("absoluthe path is - " + file.getAbsolutePath());
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.writeValue(new File(fileName() + ".json"), this);
+        objectMapper.writeValue(file, this);
     }
 }

@@ -6,6 +6,8 @@ import com.itextpdf.text.pdf.parser.SimpleTextExtractionStrategy;
 import com.itextpdf.text.pdf.parser.TextExtractionStrategy;
 import dialog.FileNameDialog;
 import dialog.FileNamesDialog;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.io.File;
@@ -21,6 +23,7 @@ import java.util.regex.Pattern;
 
 public class Application {
     public final static Properties regExpProperties = new Properties();
+    private final static Logger logger = LogManager.getLogger(Application.class);
 
 
     public static void main(String[] args){
@@ -33,7 +36,9 @@ public class Application {
             ).fileNames();
             for (String fileName : fileNames){
                 List<String> pagesFileNames = new PdfDocumentSplitByPages(fileName).onePagePdfFiles();
+                logger.info("pagesFileNames size is" + pagesFileNames.size());
                 for (String pagesFileName : pagesFileNames) {
+                    logger.info(pagesFileName);
                     new ProjectPageWithJSON(
                             new PdfProjectPage(
                                     pagesFileName,
