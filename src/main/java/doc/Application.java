@@ -33,17 +33,23 @@ public class Application {
             ).fileNames();
             for (String fileName : fileNames){
                 List<String> pagesFileNames = new PdfDocumentSplitByPages(fileName).onePagePdfFiles();
+                for (String pagesFileName : pagesFileNames) {
+                    new ProjectPageWithJSON(
+                            new PdfProjectPage(
+                                    pagesFileName,
+                                    regExpProperties.getProperty("kabelRegExp"),
+                                    regExpProperties.getProperty("breakerRegExp")
+                            )
+                    ).writeToJSON();
+                }
             }
-
-
-
         } catch (Exception exception){
-
+            exception.printStackTrace();
         }
 
     }
 
-    private static void setupRegExpProperties() throws IOException {
+    protected static void setupRegExpProperties() throws IOException {
         regExpProperties.load(
                 Files.newBufferedReader(
                         Paths.get(

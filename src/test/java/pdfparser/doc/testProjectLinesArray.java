@@ -7,9 +7,12 @@ import com.itextpdf.text.pdf.parser.TextExtractionStrategy;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,6 +25,18 @@ public class testProjectLinesArray {
     @Test
     public void testLinesArrayPrinting() throws IOException {
         String regExp = "LS-[35]\\s[1-9,]{3,7}[\\s]";
+        printLinesFromArray(regExp);
+    }
+
+    @Test
+    public void testLinesToArrayRegExpFromPropertiesFile() throws IOException {
+        Properties properties = new Properties();
+        properties.load(Files.newBufferedReader(Paths.get("/home/alexej/IdeaProjects/pdfparser/src/main/resources/regExp.properties")));
+        String regExp = properties.getProperty("kabelRegExp");
+        printLinesFromArray(regExp);
+    }
+
+    private void printLinesFromArray(String regExp) throws IOException {
         Pattern pattern = Pattern.compile(regExp);
         PdfReader reader = new PdfReader("/home/alexej/Документы/Работа/Мытищи/ЭОМ 47/лист 3_Схема ВРУ2-3.pdf");
         int count = reader.getNumberOfPages();
