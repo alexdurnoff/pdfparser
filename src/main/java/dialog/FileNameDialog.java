@@ -2,14 +2,12 @@ package dialog;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
+import java.awt.*;
 import java.io.File;
 
 /**
  * Возвращает строковое представление пути к выбранному файлу.
- * Вместо него в программе будем использовать более универсальный
- * FileNamesDialog, который возвращает список строковых представлений путей к файлам.
  */
-@Deprecated
 public class FileNameDialog {
     private final String title;
     private final String buttonText;
@@ -24,7 +22,7 @@ public class FileNameDialog {
     public String fileName() {
         String fileName;
         JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setSize(800,600);
+        fileChooser.setPreferredSize(new Dimension(1200,700));
         fileChooser.setFileFilter(new FileFilter() {
             @Override
             public boolean accept(File file) {

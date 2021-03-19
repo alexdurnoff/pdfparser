@@ -2,6 +2,7 @@ package dialog;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
+import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,8 @@ public class FileNamesDialog {
     public List<String> fileNames(){
         List<String> fileNames = new ArrayList<>();
         JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setSize(800,600);
+        fileChooser.setPreferredSize(new Dimension(1200, 700));
+        fileChooser.setCurrentDirectory(new File("/home/alexej/Документы/Работа"));
         fileChooser.setFileFilter(new FileFilter() {
             @Override
             public boolean accept(File file) {
@@ -39,6 +41,7 @@ public class FileNamesDialog {
                 return fileType;
             }
         });
+        fileChooser.setMultiSelectionEnabled(true);
         fileChooser.setDialogTitle(title);
         int res = fileChooser.showDialog(null, buttonText);
         if (res == JFileChooser.APPROVE_OPTION){

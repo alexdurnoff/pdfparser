@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.List;
 
 
@@ -36,14 +37,15 @@ public class ProjectPageWithJSON implements ProjectPage, JSONWriter{
 
     @Override
     public String fileName() {
-        return this.projectPage.fileName();
+        File file = new File(projectPage.fileName());
+        String workDirectory = file.getParent();
+        logger.info(workDirectory + "/json/" + projectPage.fileName().replace("pdf", "json"));
+        return workDirectory + "/json/" + file.getName().replace("pdf", "json");
     }
 
     @Override
     public void writeToJSON() throws IOException {
-        File file  = new File(fileName() + ".json");
-        logger.info(fileName() + ".json");
-        logger.info("absoluthe path is - " + file.getAbsolutePath());
+        File file  = new File(fileName());
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.writeValue(file, this);
     }

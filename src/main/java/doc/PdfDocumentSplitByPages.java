@@ -2,10 +2,11 @@ package doc;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.text.PDFTextStripper;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,26 +16,36 @@ import java.util.List;
  * Возвращает список строк-путей к этим файлам.
  */
 public class PdfDocumentSplitByPages implements Pages{
-    private final String fileName;
+    private final String filePath;
+    private final File file;
 
-    public PdfDocumentSplitByPages(String fileName){
-        this.fileName = fileName;
+
+    public PdfDocumentSplitByPages(String filePath){
+        this.filePath = filePath;
+        this.file = new File(filePath);
     }
 
     @Override
     public List<String> onePagePdfFiles() throws IOException {
         List<String> pdfFiles = new ArrayList<>();
-        PDDocument document = PDDocument.load(new File(fileName));
+        PDDocument document = PDDocument.load(file);
         int size = document.getNumberOfPages();
-        for (int i = 0; i < size; i++){
-            PDPage page = document.getPage(i);
-            PDDocument doc = new PDDocument();
-            doc.addPage(page);
-            String pageFileName = document.getDocumentInformation().getTitle() + " page number " + i + ".pdf";
-            doc.save(pageFileName);
-            doc.close();
-            pdfFiles.add(pageFileName);
+        if (size == 1) {
+            pdfFiles.add(filePath);
+        } else {
+            for (int i = 0; i < size; i++){
+                PDPage page = document.getPage(i);
+                PDDocument doc = new PDDocument();
+                doc.addPage(page);
+                String pageFileName =
+                        filePath
+                                + " page " + i + ".pdf";
+                doc.save(pageFileName);
+                doc.close();
+                pdfFiles.add(pageFileName);
+            }
         }
+        document.close();
         return pdfFiles;
     }
 }
