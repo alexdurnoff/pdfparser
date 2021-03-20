@@ -6,6 +6,8 @@ import com.itextpdf.text.pdf.parser.SimpleTextExtractionStrategy;
 import com.itextpdf.text.pdf.parser.TextExtractionStrategy;
 import dialog.FileNameDialog;
 import dialog.FileNamesDialog;
+import doc.stringpostprocessors.PostProcessors;
+import doc.stringpostprocessors.StringPostProcessor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,11 +36,12 @@ public class Application {
                     "Выбрать файлы",
                     "pdf"
             ).fileNames();
+            StringPostProcessor postProcessor = new PostProcessors()
+                    .stringPostProcessor(regExpProperties.getProperty("postProcessor"));
+            logger.info(postProcessor.getClass().toString());
             for (String fileName : fileNames){
                 List<String> pagesFileNames = new PdfDocumentSplitByPages(fileName).onePagePdfFiles();
-                logger.info("pagesFileNames size is" + pagesFileNames.size());
                 for (String pagesFileName : pagesFileNames) {
-                    logger.info(pagesFileName);
                     new ProjectPageWithJSON(
                             new PdfProjectPage(
                                     pagesFileName,

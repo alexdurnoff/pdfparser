@@ -34,18 +34,4 @@ class ApplicationTest {
         System.out.println(lineRegExp);
     }
 
-    @Test
-    public void testLoadPropertiesByInputStream() throws IOException {
-        Properties properties = new Properties();
-        try (FileInputStream fileInputStream = new FileInputStream(
-                new FileNameDialog(
-                        "Выберите файл регулярных выражений",
-                        "Выбрать файл",
-                        "properties"
-                ).fileName()
-        )){
-            properties.load(fileInputStream);
-            System.out.println(properties.getProperty("lineRegExp"));
-        }
-    }
 }
