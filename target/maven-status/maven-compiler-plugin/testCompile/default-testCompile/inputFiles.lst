@@ -1,5 +1,2 @@
-/home/alexej/IdeaProjects/pdfparser/src/test/java/pdfparser/doc/TestOriginPdfDocument.java
-/home/alexej/IdeaProjects/pdfparser/src/test/java/pdfparser/doc/TestPdfBoxFeatures.java
-/home/alexej/IdeaProjects/pdfparser/src/test/java/pdfparser/doc/testProjectLinesArray.java
-/home/alexej/IdeaProjects/pdfparser/src/test/java/pdfparser/doc/TestPDPageFromPdfBoxLibrary.java
-/home/alexej/IdeaProjects/pdfparser/src/test/java/pdfparser/doc/TestFeaturesThisLibrary.java
+/home/alexej/IdeaProjects/pdfparser/src/test/java/doc/ApplicationTest.java
+/home/alexej/IdeaProjects/pdfparser/src/test/java/doc/ProjectPageWithJSONTest.java
