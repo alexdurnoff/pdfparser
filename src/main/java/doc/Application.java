@@ -6,10 +6,13 @@ import com.itextpdf.text.pdf.parser.SimpleTextExtractionStrategy;
 import com.itextpdf.text.pdf.parser.TextExtractionStrategy;
 import dialog.FileNameDialog;
 import dialog.FileNamesDialog;
+import doc.stringpostprocessors.PostProcessorFromFile;
 import doc.stringpostprocessors.PostProcessors;
 import doc.stringpostprocessors.StringPostProcessor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import regexp.RegExpFromFile;
+import regexp.RegularExpressions;
 
 import javax.swing.*;
 import java.io.File;
@@ -25,28 +28,34 @@ import java.util.regex.Pattern;
 
 public class Application {
     public final static Properties regExpProperties = new Properties();
+    public static RegularExpressions regularExpressions;
     private final static Logger logger = LogManager.getLogger(Application.class);
+    private static String fileName;
 
 
     public static void main(String[] args){
         try{
+            fileName = new FileNameDialog(
+                    "Выберите файл регулярных выражений",
+                    "Выбрать файл",
+                    "properties"
+            ).fileName();
             setupRegExpProperties();
             List<String> fileNames = new FileNamesDialog(
                     "Выбрать исходные pdf-файлы",
                     "Выбрать файлы",
                     "pdf"
             ).fileNames();
-            StringPostProcessor postProcessor = new PostProcessors()
-                    .stringPostProcessor(regExpProperties.getProperty("postProcessor"));
-            logger.info(postProcessor.getClass().toString());
+            StringPostProcessor postProcessor = new PostProcessorFromFile(fileName).postProcessor();
+            RegularExpressions regularExpressions = new RegExpFromFile(fileName);
             for (String fileName : fileNames){
                 List<String> pagesFileNames = new PdfDocumentSplitByPages(fileName).onePagePdfFiles();
                 for (String pagesFileName : pagesFileNames) {
                     new ProjectPageWithJSON(
                             new PdfProjectPage(
                                     pagesFileName,
-                                    regExpProperties.getProperty("kabelRegExp"),
-                                    regExpProperties.getProperty("breakerRegExp")
+                                    regularExpressions.kabelRegExp(),
+                                    regularExpressions.linesRegExp()
                             )
                     ).writeToJSON();
                 }
@@ -58,17 +67,7 @@ public class Application {
     }
 
     protected static void setupRegExpProperties() throws IOException {
-        regExpProperties.load(
-                Files.newBufferedReader(
-                        Paths.get(
-                                new FileNameDialog(
-                                        "Выберите файл регулярных выражений",
-                                        "Выбрать файл",
-                                        "properties"
-                                ).fileName()
-                        )
-                )
-        );
+        regularExpressions = new RegExpFromFile(fileName);
     }
 
 

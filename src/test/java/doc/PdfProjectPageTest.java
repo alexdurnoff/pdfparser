@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -41,6 +42,12 @@ class PdfProjectPageTest {
         System.out.println("start test method lines() for klass PdfProjectPage");
         this.pdfProjectPage.lines().forEach(System.out::println);
         Assertions.assertTrue(this.pdfProjectPage.lines().size()>0);
+    }
+
+    @Test
+    public void testPurposes() throws IOException {
+        List<String> purposes = this.pdfProjectPage.purposes();
+        Assertions.assertEquals(purposes.size(),0);
     }
 
     @Test

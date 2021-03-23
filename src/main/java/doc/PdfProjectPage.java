@@ -3,10 +3,8 @@ package doc;
 
 
 import com.itextpdf.text.pdf.PdfReader;
-import com.itextpdf.text.pdf.parser.PdfTextExtractor;
-import com.itextpdf.text.pdf.parser.SimpleTextExtractionStrategy;
 import doc.stringpostprocessors.DefaultStringPostProcessor;
-import doc.stringpostprocessors.PostProcessors;
+import doc.stringpostprocessors.StringsByRegExpFromText;
 import doc.stringpostprocessors.StringPostProcessor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,14 +23,14 @@ import java.util.regex.Pattern;
 public class PdfProjectPage implements ProjectPage{
     private final String fileName;
     private PdfReader reader;
-    private final String lineRegExp;
+    private final String kabelRegExp;
     private final String breakerRegExp;
     private final static Logger logger = LogManager.getLogger(PdfProjectPage.class);
     private final StringPostProcessor postProcessor;
 
-    public PdfProjectPage(String fileName, String lineRegExp, String breakerRegExp) {
+    public PdfProjectPage(String fileName, String kabelRegExp, String breakerRegExp) {
         this.fileName = fileName;
-        this.lineRegExp = lineRegExp;
+        this.kabelRegExp = kabelRegExp;
         this.breakerRegExp = breakerRegExp;
         this.postProcessor = new DefaultStringPostProcessor();
     }
@@ -40,13 +39,13 @@ public class PdfProjectPage implements ProjectPage{
      * Этот конструктор принримает stringPostProcessor, если нужна
      * дополниьтельная обработка текста после его получения из файла.
      * @param fileName - путь к pdf-файлу.
-     * @param lineRegExp - регулярное выражения для кабельных линий.
+     * @param kabelRegExp - регулярное выражения для кабельных линий.
      * @param breakerRegExp - регулярное выражение для автоматов.
      * @param postProcessor - StringPostProcessor для обработки текста.
      */
-    public PdfProjectPage(String fileName, String lineRegExp, String breakerRegExp, StringPostProcessor postProcessor){
+    public PdfProjectPage(String fileName, String kabelRegExp, String breakerRegExp, StringPostProcessor postProcessor){
         this.fileName = fileName;
-        this.lineRegExp = lineRegExp;
+        this.kabelRegExp = kabelRegExp;
         this.breakerRegExp = breakerRegExp;
         this.postProcessor = postProcessor;
     }
@@ -58,7 +57,7 @@ public class PdfProjectPage implements ProjectPage{
      */
     @Override
     public List<String> kabelLines() throws IOException {
-        Pattern pattern = Pattern.compile(lineRegExp);
+        Pattern pattern = Pattern.compile(kabelRegExp);
         return stingListByRegExp(pattern);
     }
 
@@ -70,12 +69,11 @@ public class PdfProjectPage implements ProjectPage{
      */
     private List<String> stingListByRegExp(Pattern pattern) throws IOException {
         List<String> stringList = new ArrayList<>();
-        String text = text();
-        Matcher matcher = pattern.matcher(text);
-        while (matcher.find()){
-            stringList.add(matcher.group(0));
-        }
-        return stringList;
+        String text = new TextFromPdfWhitPostProcessor(
+                new TextFromPdf(fileName),
+                postProcessor
+        ).textFromFile();
+        return new StringsByRegExpFromText(pattern, text).strings();
     }
 
     /**
@@ -118,11 +116,16 @@ public class PdfProjectPage implements ProjectPage{
             lineList.addAll(
                     new LineListWithFullInformation(
                             str,
-                            lineRegExp
+                            kabelRegExp
                     ).linesWithFullInformation()
             );
         }
         return lineList;
+    }
+
+    @Override
+    public List<String> purposes() throws IOException {
+        return Collections.emptyList();
     }
 
     /**
@@ -132,7 +135,7 @@ public class PdfProjectPage implements ProjectPage{
     private List<String> textSplitByKabels(String text) throws IOException {
         String result = text;
         List<String> checkedStrings = new ArrayList<>();
-        Pattern pattern = Pattern.compile(lineRegExp);
+        Pattern pattern = Pattern.compile(kabelRegExp);
         Matcher matcher = pattern.matcher(text);
         while (matcher.find()){
             String replacedString  = matcher.group(0);

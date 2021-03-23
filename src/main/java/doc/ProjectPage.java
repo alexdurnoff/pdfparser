@@ -12,6 +12,7 @@ public interface ProjectPage {
     List<String> kabelLines() throws IOException;
     List<String> breakers() throws IOException;
     List<String> lines() throws IOException;
+    List<String> purposes() throws IOException;
     String fileName() throws IOException;
 
     /**
@@ -57,6 +58,15 @@ public interface ProjectPage {
         @Override
         public List<String> lines() {
             return this.lines;
+        }
+
+        @Override
+        public List<String> purposes() throws IOException {
+            List<String> purposes = new ArrayList();
+            purposes.add("Группа 1");
+            purposes.add("Группа 2");
+            purposes.add("Группа 3");
+            return purposes;
         }
 
         @Override
